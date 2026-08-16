@@ -34,7 +34,7 @@ Clone the repository and run the environment check:
 git clone https://github.com/<your-username>/bypasser.git
 cd bypasser
 
-python3 run.py --check
+python3 bypasser.py --check
 ```
 
 No virtual environment, `pip`, or external Python dependencies are required.
@@ -46,7 +46,7 @@ No virtual environment, `pip`, or external Python dependencies are required.
 ### Syntax
 
 ```bash
-python3 run.py scan \
+python3 bypasser.py scan \
   --url <URL> \
   --param <PARAMETER> \
   --type <TYPE> \
@@ -58,7 +58,7 @@ python3 run.py scan \
 SQL Injection:
 
 ```bash
-python3 run.py scan \
+python3 bypasser.py scan \
   --url "http://target/login.php" \
   --param user \
   --type sqli \
@@ -70,7 +70,7 @@ python3 run.py scan \
 XSS:
 
 ```bash
-python3 run.py scan \
+python3 bypasser.py scan \
   --url "http://target/search.php" \
   --param q \
   --type xss \
@@ -80,7 +80,7 @@ python3 run.py scan \
 Traversal through a proxy:
 
 ```bash
-python3 run.py scan \
+python3 bypasser.py scan \
   --url "http://target/index.php" \
   --param page \
   --type traversal \
@@ -91,7 +91,7 @@ python3 run.py scan \
 RCE without stopping after the first result:
 
 ```bash
-python3 run.py scan \
+python3 bypasser.py scan \
   --url "http://target/cgi-bin/exec" \
   --param cmd \
   --type rce \
@@ -141,7 +141,7 @@ python3 run.py scan \
 Full command help:
 
 ```bash
-python3 run.py scan --help
+python3 bypasser.py scan --help
 ```
 
 ---
@@ -290,7 +290,7 @@ Output paths
 
 ```text
 bypasser/
-├── run.py
+├── bypasser.py
 ├── wafkit/
 │   ├── core/
 │   ├── evasions/
@@ -338,7 +338,7 @@ Contributions are welcome in architecture, testing, documentation, validation, a
 Before submitting changes:
 
 ```bash
-python3 run.py --check
+python3 bypasser.py --check
 ```
 
 Test all changes in a controlled environment.
