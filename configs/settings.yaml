@@ -1,0 +1,29 @@
+# Bypasser - configuracoes globais
+waf_signatures: "configs/waf_signatures.yaml"
+payloads_dir: "configs/payloads"
+
+# Evasoes ativas (ordem = prioridade de aplicacao na chain)
+evasions:
+  enabled: [url, double_url, hex, unicode, html_entities, base64, case, sql_comments, whitespace, null_byte, overlong, hpp, chunked, json, xml]
+
+# Proxies: lista vazia = direto. Ex.: ["http://127.0.0.1:8080", "socks5://127.0.0.1:9050"]
+proxies: []
+proxy_rotation: round_robin
+
+tls:
+  impersonate: null
+  http2: false
+
+limits:
+  delay: 0.8
+  jitter: 0.3
+  timeout: 10
+  workers: 1
+  max_chains_per_payload: 12
+  block_codes: [403, 406, 429, 503, 509]
+  confidence_threshold: 70
+  stop_on_bypass: true
+
+output:
+  log_file: "logs/bypasser.log"
+  jsonl_events: true

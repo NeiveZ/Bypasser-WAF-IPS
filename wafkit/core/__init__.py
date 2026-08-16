@@ -1,0 +1,1 @@
+"""Nucleo do Bypasser: transporte, baseline, fingerprint, validacao e pipeline."""

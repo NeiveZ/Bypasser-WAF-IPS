@@ -1,0 +1,105 @@
+# Bypasser - assinaturas de WAF para fingerprint por pontuacao.
+# headers: nome do header -> padrao regex (vazio = basta a presenca do header)
+# cookies: nomes/padroes de cookie (regex)
+# status:  codigos HTTP que reforcam a hipotese
+# body:    fragmentos de texto na resposta (case-insensitive)
+wafs:
+  - name: Cloudflare
+    headers:
+      server: cloudflare
+      cf-ray: ""
+      cf-cache-status: ""
+    cookies: [__cfduid, __cf_bm, cf_clearance]
+    status: [403, 503]
+    body: [cloudflare, cf-ray]
+
+  - name: AWS WAF / CloudFront
+    headers:
+      server: cloudfront
+      x-amz-cf-id: ""
+      x-amzn-requestid: ""
+    cookies: [aws-waf-token]
+    status: [403]
+    body: [awswaf, requestid]
+
+  - name: Akamai Ghost
+    headers:
+      server: AkamaiGHost
+    cookies: [_abck, bm_sz, ak_bmsc]
+    status: [403]
+    body: ["reference #", akamai]
+
+  - name: F5 BIG-IP ASM
+    headers:
+      server: BigIP
+    cookies: ["TS[0-9a-f]{4,}", F5_]
+    status: [403]
+    body: ["the requested url was rejected", f5]
+
+  - name: Imperva Incapsula
+    headers: {}
+    cookies: [incap_ses_, visid_incap_]
+    status: [403, 509]
+    body: [incapsula]
+
+  - name: ModSecurity (OWASP CRS)
+    headers:
+      server: "mod_security|Apache/.*mod_security.*"
+    cookies: []
+    status: [403, 406, 500]
+    body: [mod_security, "not acceptable"]
+
+  - name: FortiWeb
+    headers:
+      server: FortiWeb
+    cookies: [FWB, fortiweb]
+    status: [403]
+    body: [fortiweb, "attack detected"]
+
+  - name: Sucuri
+    headers:
+      x-sucuri-id: ""
+      server: "sucuri|cloudproxy"
+    cookies: []
+    status: [403]
+    body: [sucuri, "website firewall"]
+
+  - name: Citrix NetScaler / AppFW
+    headers: {}
+    cookies: ["NSC_", citrix_ns_id]
+    status: [400, 403]
+    body: [appfw, netscaler]
+
+  - name: Barracuda WAF
+    headers:
+      server: Barracuda
+    cookies: [barra_counter]
+    status: [403]
+    body: [barracuda]
+
+  - name: Wordfence
+    headers: {}
+    cookies: [wfvt_]
+    status: [403, 503]
+    body: [wordfence, "blocked by wordfence"]
+
+  - name: StackPath
+    headers: {}
+    cookies: [__ddg1, __ddg2, __ddgid]
+    status: [403]
+    body: [stackpath]
+
+  - name: SafeDog
+    headers:
+      server: Safedog
+    cookies: []
+    status: [403]
+    body: [safedog]
+
+  - name: Alibaba Cloud WAF
+    headers:
+      x-cache: waf
+      server: Tengine
+    cookies: []
+    status: [403, 405]
+    body: ["slw/", alibaba]

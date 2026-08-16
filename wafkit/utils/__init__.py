@@ -1,0 +1,1 @@
+"""Utilidades stdlib do Bypasser: ymin (YAML), logger, text."""

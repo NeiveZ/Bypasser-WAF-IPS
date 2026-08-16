@@ -1,0 +1,1 @@
+"""Carregamento de payloads YAML (sem PyYAML — usa ymin)."""

